@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -95,6 +96,7 @@ fun MainScreen(
             modifier = Modifier.padding(top = 32.dp, bottom = 16.dp)
         )
 
+        // Features Overview Card
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(
@@ -103,23 +105,60 @@ fun MainScreen(
         ) {
             Column(
                 modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(
-                    text = "Setup Instructions",
-                    style = MaterialTheme.typography.titleMedium
+                    text = "Available Features",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
 
                 Text(
-                    text = "1. Grant settings permission below\n" +
-                            "2. Pull down Quick Settings panel\n" +
-                            "3. Edit tiles (pencil icon)\n" +
-                            "4. Find \"Adaptive brightness\" tile and drag to active area",
-                    style = MaterialTheme.typography.bodyMedium
+                    text = "✓ Quick Settings Tile - Adaptive Brightness toggle\n" +
+                            "✓ Home Screen Widget - Quick access to controls\n" +
+                            "✓ Brightness Control - Adjust screen brightness\n" +
+                            "✓ Volume Control - Media, Ring, and Alarm volumes",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
         }
 
+        // Setup Instructions Card
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.secondaryContainer
+            )
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text(
+                    text = "How to Use",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                )
+
+                Text(
+                    text = "Quick Settings Tile:\n" +
+                            "1. Swipe down from top (twice for full panel)\n" +
+                            "2. Tap edit (pencil icon)\n" +
+                            "3. Find 'Adaptive brightness' tile\n" +
+                            "4. Drag it to your active tiles\n\n" +
+                            "Home Screen Widget:\n" +
+                            "1. Long press on home screen\n" +
+                            "2. Select 'Widgets'\n" +
+                            "3. Find 'Quick Tools' widget\n" +
+                            "4. Drag to home screen",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                )
+            }
+        }
+
+        // Permission Status Card
         if (!canWriteSettings) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -133,13 +172,13 @@ fun MainScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = "Permission Required",
+                        text = "⚠️ Permission Required",
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onErrorContainer
                     )
 
                     Text(
-                        text = "Quick Tools needs permission to modify system settings to toggle adaptive brightness.",
+                        text = "Brightness controls need system settings permission",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onErrorContainer,
                         textAlign = TextAlign.Center
@@ -162,19 +201,24 @@ fun MainScreen(
                     containerColor = MaterialTheme.colorScheme.tertiaryContainer
                 )
             ) {
-                Text(
-                    text = "✓ Permission Granted",
-                    style = MaterialTheme.typography.titleMedium,
+                Row(
                     modifier = Modifier.padding(16.dp),
-                    color = MaterialTheme.colorScheme.onTertiaryContainer
-                )
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "✓ All Permissions Granted",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onTertiaryContainer
+                    )
+                }
             }
         }
 
         Spacer(modifier = Modifier.weight(1f))
 
         Text(
-            text = "More features coming soon!",
+            text = "Quick Tools v1.0",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
