@@ -85,7 +85,7 @@ fun MainScreen(
                     text = "1. Grant settings permission below\n" +
                             "2. Pull down Quick Settings panel\n" +
                             "3. Edit tiles (pencil icon)\n" +
-                            "4. Find 'Adaptive' tile and drag to active area",
+                            "4. Find Quick Tools items tile and drag to active area",
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
@@ -110,7 +110,7 @@ fun MainScreen(
                     )
 
                     Text(
-                        text = "Quick Tools needs permission to modify system settings for the Adaptive Brightness toggle to work.",
+                        text = "Quick Tools needs permission to modify system settings to work.",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onErrorContainer,
                         textAlign = TextAlign.Center
