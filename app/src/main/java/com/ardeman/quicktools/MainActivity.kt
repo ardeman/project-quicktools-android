@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -86,6 +87,7 @@ fun MainScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .statusBarsPadding() // This handles the status bar padding
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -93,7 +95,7 @@ fun MainScreen(
         Text(
             text = "Quick Tools",
             style = MaterialTheme.typography.headlineLarge,
-            modifier = Modifier.padding(top = 32.dp, bottom = 16.dp)
+            modifier = Modifier.padding(bottom = 16.dp)
         )
 
         // Features Overview Card
