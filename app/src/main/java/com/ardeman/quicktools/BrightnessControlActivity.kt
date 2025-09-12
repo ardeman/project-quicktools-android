@@ -194,7 +194,7 @@ private fun getCurrentBrightness(context: Context): Float {
             Settings.System.SCREEN_BRIGHTNESS
         )
         brightness / 255f
-    } catch (e: Settings.SettingNotFoundException) {
+    } catch (_: Settings.SettingNotFoundException) {
         0.5f
     }
 }
