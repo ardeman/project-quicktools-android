@@ -227,9 +227,8 @@ fun MainScreen(
                 }
             }
 
-            // Version info at the bottom with padding
             Text(
-                text = "Quick Tools v1.0",
+                text = "More features coming soon!",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 24.dp, bottom = 8.dp)

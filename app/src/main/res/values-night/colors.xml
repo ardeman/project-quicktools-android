@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Widget colors for dark theme -->
+    <color name="widget_background">#E6000000</color>
+    <color name="widget_button_background">#1AFFFFFF</color>
+    <color name="widget_icon_tint">#FFFFFFFF</color>
+</resources>

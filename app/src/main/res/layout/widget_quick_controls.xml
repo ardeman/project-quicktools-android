@@ -16,7 +16,7 @@
         android:src="@drawable/rounded_brightness_6_24"
         android:contentDescription="@string/adjust_brightness"
         android:scaleType="center"
-        android:tint="?android:attr/textColorPrimary" />
+        android:tint="@color/widget_icon_tint" />
 
     <ImageButton
         android:id="@+id/button_volume"
@@ -28,6 +28,6 @@
         android:src="@drawable/rounded_volume_up_24"
         android:contentDescription="@string/adjust_volume"
         android:scaleType="center"
-        android:tint="?android:attr/textColorPrimary" />
+        android:tint="@color/widget_icon_tint" />
 
 </LinearLayout>
