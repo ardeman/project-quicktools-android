@@ -20,10 +20,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.ardeman.quicktools.ui.theme.QuickToolsTheme
 
 class MainActivity : ComponentActivity() {
@@ -37,7 +45,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     MainScreen(
-                        canWriteSettings = Settings.System.canWrite(this),
+                        activity = this,
                         onRequestPermission = {
                             startActivity(Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS))
                         }
@@ -50,9 +58,30 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen(
-    canWriteSettings: Boolean,
+    activity: ComponentActivity,
     onRequestPermission: () -> Unit
 ) {
+    // State to track permission status
+    var canWriteSettings by remember {
+        mutableStateOf(Settings.System.canWrite(activity))
+    }
+
+    // Observe lifecycle to refresh permission status when app resumes
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                // Check permission status when app resumes
+                canWriteSettings = Settings.System.canWrite(activity)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -85,7 +114,7 @@ fun MainScreen(
                     text = "1. Grant settings permission below\n" +
                             "2. Pull down Quick Settings panel\n" +
                             "3. Edit tiles (pencil icon)\n" +
-                            "4. Find Quick Tools items tile and drag to active area",
+                            "4. Find \"Adaptive brightness\" tile and drag to active area",
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
@@ -110,7 +139,7 @@ fun MainScreen(
                     )
 
                     Text(
-                        text = "Quick Tools needs permission to modify system settings to work.",
+                        text = "Quick Tools needs permission to modify system settings to toggle adaptive brightness.",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onErrorContainer,
                         textAlign = TextAlign.Center
