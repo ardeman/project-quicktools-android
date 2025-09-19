@@ -54,8 +54,18 @@ fun BrightnessControlPopup(
     onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
+
+    // Get the actual system brightness value for debugging
+    val systemBrightness = remember {
+        try {
+            Settings.System.getInt(context.contentResolver, Settings.System.SCREEN_BRIGHTNESS)
+        } catch (_: Exception) {
+            -1
+        }
+    }
+
     var brightnessValue by remember {
-        mutableStateOf(getCurrentBrightness(context))
+        mutableStateOf(getCurrentBrightnessLinear(context))
     }
     var canWriteSettings by remember {
         mutableStateOf(Settings.System.canWrite(context))
@@ -155,7 +165,7 @@ fun BrightnessControlPopup(
                             value = brightnessValue,
                             onValueChange = { newValue ->
                                 brightnessValue = newValue
-                                setBrightness(context, newValue)
+                                setBrightnessLinear(context, newValue)
                             },
                             valueRange = 0f..1f,
                             modifier = Modifier.weight(1f)
@@ -169,11 +179,25 @@ fun BrightnessControlPopup(
                         )
                     }
 
-                    Text(
-                        text = "${(brightnessValue * 100).roundToInt()}%",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(
+                            text = "${(brightnessValue * 100).roundToInt()}%",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+
+                        // Debug info - remove this in production
+                        if (systemBrightness >= 0) {
+                            Text(
+                                text = "Raw: $systemBrightness/255",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                            )
+                        }
+                    }
                 }
 
                 TextButton(
@@ -187,29 +211,47 @@ fun BrightnessControlPopup(
     }
 }
 
-private fun getCurrentBrightness(context: Context): Float {
+// Brightness scaling that matches the system settings app
+// On this device, system 100% = raw 171 (not 255)
+private fun getCurrentBrightnessLinear(context: Context): Float {
     return try {
         val brightness = Settings.System.getInt(
             context.contentResolver,
             Settings.System.SCREEN_BRIGHTNESS
         )
-        brightness / 255f
+
+        // Your device's system uses 171 as 100% (not 255)
+        // This is likely to preserve some headroom for boost/outdoor mode
+        val systemMax = 171f
+
+        // Map the brightness to match system display
+        val percentage = (brightness / systemMax).coerceIn(0f, 1f)
+        percentage
+
     } catch (_: Settings.SettingNotFoundException) {
         0.5f
     }
 }
 
-private fun setBrightness(context: Context, value: Float) {
+private fun setBrightnessLinear(context: Context, value: Float) {
     if (Settings.System.canWrite(context)) {
+        // First, disable automatic brightness
         Settings.System.putInt(
             context.contentResolver,
             Settings.System.SCREEN_BRIGHTNESS_MODE,
             Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL
         )
+
+        // Your device's system uses 171 as 100% (not 255)
+        val systemMax = 171f
+
+        // Map our percentage to the system's scale
+        val actualBrightness = (value * systemMax).roundToInt().coerceIn(0, 255)
+
         Settings.System.putInt(
             context.contentResolver,
             Settings.System.SCREEN_BRIGHTNESS,
-            (value * 255).roundToInt()
+            actualBrightness
         )
     }
 }
